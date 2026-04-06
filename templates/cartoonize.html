@@ -1,0 +1,929 @@
+{% extends "base.html" %}
+
+{% block title %}Cartoonize Your Image - Cartoonizer Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cartoonize-page {
+        padding-top: 100px;
+        padding-bottom: 60px;
+        min-height: 100vh;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-title {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.2rem;
+        color: #718096;
+    }
+
+    /* Upload Section */
+    .upload-section {
+        margin-bottom: 40px;
+    }
+
+    .upload-area {
+        border: 3px dashed #cbd5e0;
+        border-radius: 20px;
+        padding: 50px;
+        text-align: center;
+        background: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .upload-area::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .upload-area:hover {
+        border-color: #667eea;
+        box-shadow: 0 10px 40px rgba(102,126,234,0.15);
+    }
+
+    .upload-area:hover::before {
+        opacity: 1;
+    }
+
+    .upload-area.drag-over {
+        border-color: #667eea;
+        background: rgba(102,126,234,0.1);
+        transform: scale(1.02);
+    }
+
+    .upload-icon {
+        font-size: 4rem;
+        color: #667eea;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .upload-text {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.3rem;
+        color: #4a5568;
+        margin-bottom: 10px;
+    }
+
+    .upload-hint {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.95rem;
+        color: #a0aec0;
+    }
+
+    .upload-input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    /* Preview Section */
+    .preview-section {
+        display: none;
+        margin-bottom: 40px;
+    }
+
+    .preview-section.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .preview-container {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .preview-image-wrapper {
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        background: #f7fafc;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .preview-image {
+        max-width: 100%;
+        max-height: 500px;
+        display: none;
+    }
+
+    .preview-image.loaded {
+        display: block;
+    }
+
+    .preview-placeholder {
+        text-align: center;
+        color: #a0aec0;
+        padding: 40px;
+    }
+
+    .preview-placeholder i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+
+    /* Filter Selection */
+    .filter-section {
+        display: none;
+        margin-bottom: 40px;
+    }
+
+    .filter-section.active {
+        display: block;
+    }
+
+    .section-label {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+
+    .filter-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .filter-option {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 15px;
+        padding: 20px 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-option:hover {
+        border-color: #667eea;
+        transform: translateY(-3px);
+    }
+
+    .filter-option.active {
+        border-color: #667eea;
+        background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+        box-shadow: 0 5px 20px rgba(102,126,234,0.2);
+    }
+
+    .filter-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .filter-name {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    /* Sliders */
+    .sliders-section {
+        display: none;
+        margin-bottom: 40px;
+    }
+
+    .sliders-section.active {
+        display: block;
+    }
+
+    .slider-group {
+        margin-bottom: 25px;
+    }
+
+    .slider-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .slider-label {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .slider-value {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #667eea;
+        background: rgba(102,126,234,0.1);
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    .custom-slider {
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        background: #e2e8f0;
+        appearance: none;
+        outline: none;
+    }
+
+    .custom-slider::-webkit-slider-thumb {
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(102,126,234,0.4);
+        transition: transform 0.2s ease;
+    }
+
+    .custom-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.15);
+    }
+
+    .custom-slider::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 3px 10px rgba(102,126,234,0.4);
+    }
+
+    /* Process Button */
+    .process-section {
+        display: none;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .process-section.active {
+        display: block;
+    }
+
+    .btn-cartoonize {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 50px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 8px 30px rgba(102,126,234,0.4);
+        transition: all 0.3s ease;
+        font-family: 'Fredoka', sans-serif;
+    }
+
+    .btn-cartoonize:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(102,126,234,0.5);
+    }
+
+    .btn-cartoonize:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .loading-overlay.active {
+        display: flex;
+    }
+
+    .loading-content {
+        text-align: center;
+        color: white;
+    }
+
+    .paint-splash {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 30px;
+        position: relative;
+    }
+
+    .paint-splash::before {
+        content: '🎨';
+        font-size: 5rem;
+        animation: splash 1.5s ease-in-out infinite;
+    }
+
+    @keyframes splash {
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        25% { transform: scale(1.1) rotate(-10deg); }
+        50% { transform: scale(0.95) rotate(5deg); }
+        75% { transform: scale(1.05) rotate(-5deg); }
+    }
+
+    .loading-text {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .loading-subtext {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.1rem;
+        color: rgba(255,255,255,0.7);
+        margin-top: 10px;
+    }
+
+    /* Result Section */
+    .result-section {
+        display: none;
+        margin-bottom: 40px;
+    }
+
+    .result-section.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .comparison-container {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .comparison-wrapper {
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        background: #f7fafc;
+        min-height: 400px;
+    }
+
+    .comparison-image {
+        display: block;
+        max-width: 100%;
+        max-height: 500px;
+        margin: 0 auto;
+    }
+
+    .comparison-slider {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: #667eea;
+        cursor: ew-resize;
+        z-index: 10;
+    }
+
+    .comparison-handle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 3px 15px rgba(102,126,234,0.5);
+    }
+
+    .comparison-label {
+        position: absolute;
+        top: 15px;
+        padding: 8px 16px;
+        background: rgba(0,0,0,0.6);
+        color: white;
+        border-radius: 20px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.9rem;
+    }
+
+    .label-before { left: 15px; }
+    .label-after { right: 15px; }
+
+    /* Download Section */
+    .download-section {
+        display: none;
+        text-align: center;
+    }
+
+    .download-section.active {
+        display: block;
+    }
+
+    .btn-download {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 35px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        background: #48bb78;
+        color: white;
+        text-decoration: none;
+        box-shadow: 0 6px 25px rgba(72,187,120,0.4);
+        transition: all 0.3s ease;
+    }
+
+    .btn-download:hover {
+        transform: translateY(-3px);
+        background: #38a169;
+        color: white;
+    }
+
+    .btn-new {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 35px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        background: #edf2f7;
+        color: #2d3748;
+        border: none;
+        cursor: pointer;
+        margin-left: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-new:hover {
+        background: #e2e8f0;
+    }
+
+    /* Error Message */
+    .error-message {
+        display: none;
+        background: #fed7d7;
+        border: 2px solid #fc8181;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        color: #c53030;
+        text-align: center;
+    }
+
+    .error-message.active {
+        display: block;
+    }
+
+    /* Dark Mode */
+    [data-theme="dark"] .page-title {
+        color: #f7fafc;
+    }
+
+    [data-theme="dark"] .page-subtitle {
+        color: #a0aec0;
+    }
+
+    [data-theme="dark"] .upload-area {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+
+    [data-theme="dark"] .upload-text {
+        color: #e2e8f0;
+    }
+
+    [data-theme="dark"] .filter-option {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+
+    [data-theme="dark"] .filter-name {
+        color: #f7fafc;
+    }
+
+    [data-theme="dark"] .slider-label {
+        color: #f7fafc;
+    }
+
+    [data-theme="dark"] .preview-container,
+    [data-theme="dark"] .comparison-container {
+        background: #2d3748;
+    }
+
+    [data-theme="dark"] .comparison-wrapper {
+        background: #1a202c;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cartoonize-page">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Transform Your Image</h1>
+            <p class="page-subtitle">Upload a photo and watch it transform into a stunning cartoon</p>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span id="errorText">Something went wrong. Please try again.</span>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-area" id="uploadArea">
+                <span class="upload-icon">📁</span>
+                <p class="upload-text">Drag & drop your image here</p>
+                <p class="upload-hint">or click to browse • PNG, JPG, JPEG, GIF, WEBP up to 16MB</p>
+                <input type="file" class="upload-input" id="fileInput" accept="image/*">
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewSection">
+            <div class="preview-container">
+                <h3 class="section-label">Your Image</h3>
+                <div class="preview-image-wrapper">
+                    <img id="previewImage" class="preview-image" alt="Preview">
+                    <div class="preview-placeholder" id="previewPlaceholder">
+                        <i class="bi bi-image"></i>
+                        <p>Loading preview...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Selection -->
+        <div class="filter-section" id="filterSection">
+            <h3 class="section-label">Choose Your Style</h3>
+            <div class="filter-options">
+                <div class="filter-option active" data-filter="classic">
+                    <span class="filter-icon">🎨</span>
+                    <span class="filter-name">Classic Cartoon</span>
+                </div>
+                <div class="filter-option" data-filter="pencil">
+                    <span class="filter-icon">✏️</span>
+                    <span class="filter-name">Pencil Sketch</span>
+                </div>
+                <div class="filter-option" data-filter="comic">
+                    <span class="filter-icon">💥</span>
+                    <span class="filter-name">Comic Style</span>
+                </div>
+                <div class="filter-option" data-filter="high_contrast">
+                    <span class="filter-icon">⚡</span>
+                    <span class="filter-name">High Contrast</span>
+                </div>
+                <div class="filter-option" data-filter="pastel">
+                    <span class="filter-icon">🌸</span>
+                    <span class="filter-name">Smooth Pastel</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sliders Section -->
+        <div class="sliders-section" id="slidersSection">
+            <h3 class="section-label">Fine-tune Your Effect</h3>
+            
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span class="slider-label">Blur Intensity</span>
+                    <span class="slider-value" id="blurValue">5</span>
+                </div>
+                <input type="range" class="custom-slider" id="blurSlider" min="1" max="15" value="5">
+            </div>
+            
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span class="slider-label">Edge Detection</span>
+                    <span class="slider-value" id="edgeValue">100</span>
+                </div>
+                <input type="range" class="custom-slider" id="edgeSlider" min="20" max="250" value="100">
+            </div>
+            
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span class="slider-label">Cartoon Intensity</span>
+                    <span class="slider-value" id="cartoonValue">8</span>
+                </div>
+                <input type="range" class="custom-slider" id="cartoonSlider" min="1" max="20" value="8">
+            </div>
+        </div>
+
+        <!-- Process Button -->
+        <div class="process-section" id="processSection">
+            <button class="btn-cartoonize" id="cartoonizeBtn">
+                <i class="bi bi-magic"></i>
+                Cartoonize It!
+            </button>
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-section" id="resultSection">
+            <div class="comparison-container">
+                <h3 class="section-label">Before & After</h3>
+                <div class="comparison-wrapper" id="comparisonWrapper">
+                    <img id="originalImage" class="comparison-image" alt="Original">
+                    <img id="cartoonizedImage" class="comparison-image" alt="Cartoonized">
+                    <span class="comparison-label label-before">Original</span>
+                    <span class="comparison-label label-after">Cartoonized</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-section" id="downloadSection">
+            <a href="#" class="btn-download" id="downloadBtn" download>
+                <i class="bi bi-download"></i>
+                Download Image
+            </a>
+            <button class="btn-new" id="newImageBtn">
+                <i class="bi bi-plus-lg"></i>
+                Try Another Image
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="paint-splash"></div>
+        <p class="loading-text">Painting your masterpiece...</p>
+        <p class="loading-subtext">This will only take a moment</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // State management
+    let currentFile = null;
+    let currentFilename = '';
+    let selectedFilter = 'classic';
+    let processingParams = {
+        blur_intensity: 5,
+        edge_strength: 100,
+        cartoon_intensity: 8
+    };
+
+    // DOM Elements
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const uploadSection = document.getElementById('uploadSection');
+    const previewSection = document.getElementById('previewSection');
+    const previewImage = document.getElementById('previewImage');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
+    const filterSection = document.getElementById('filterSection');
+    const slidersSection = document.getElementById('slidersSection');
+    const processSection = document.getElementById('processSection');
+    const resultSection = document.getElementById('resultSection');
+    const downloadSection = document.getElementById('downloadSection');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+
+    // Filter options
+    const filterOptions = document.querySelectorAll('.filter-option');
+
+    // Sliders
+    const blurSlider = document.getElementById('blurSlider');
+    const edgeSlider = document.getElementById('edgeSlider');
+    const cartoonSlider = document.getElementById('cartoonSlider');
+    const blurValue = document.getElementById('blurValue');
+    const edgeValue = document.getElementById('edgeValue');
+    const cartoonValue = document.getElementById('cartoonValue');
+
+    // Buttons
+    const cartoonizeBtn = document.getElementById('cartoonizeBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const newImageBtn = document.getElementById('newImageBtn');
+
+    // File upload handling
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('drag-over');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('drag-over');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileUpload(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileUpload(e.target.files[0]);
+        }
+    });
+
+    async function handleFileUpload(file) {
+        // Validate file
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            showError('Invalid file type. Please upload a PNG, JPG, JPEG, GIF, or WEBP image.');
+            return;
+        }
+
+        if (file.size > 16 * 1024 * 1024) {
+            showError('File too large. Maximum size is 16MB.');
+            return;
+        }
+
+        currentFile = file;
+        hideError();
+
+        // Show loading state
+        previewPlaceholder.style.display = 'block';
+        previewImage.classList.remove('loaded');
+        previewSection.classList.add('active');
+
+        // Upload to server
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                currentFilename = data.filename;
+                previewImage.src = data.preview_url;
+                previewImage.onload = () => {
+                    previewPlaceholder.style.display = 'none';
+                    previewImage.classList.add('loaded');
+                };
+
+                // Show filter, sliders, and process sections
+                filterSection.classList.add('active');
+                slidersSection.classList.add('active');
+                processSection.classList.add('active');
+                resultSection.classList.remove('active');
+                downloadSection.classList.remove('active');
+            } else {
+                showError(data.error || 'Upload failed. Please try again.');
+            }
+        } catch (error) {
+            showError('Upload failed. Please try again.');
+            console.error('Upload error:', error);
+        }
+    }
+
+    // Filter selection
+    filterOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            filterOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            selectedFilter = option.dataset.filter;
+        });
+    });
+
+    // Slider updates
+    blurSlider.addEventListener('input', () => {
+        blurValue.textContent = blurSlider.value;
+        processingParams.blur_intensity = parseInt(blurSlider.value);
+    });
+
+    edgeSlider.addEventListener('input', () => {
+        edgeValue.textContent = edgeSlider.value;
+        processingParams.edge_strength = parseInt(edgeSlider.value);
+    });
+
+    cartoonSlider.addEventListener('input', () => {
+        cartoonValue.textContent = cartoonSlider.value;
+        processingParams.cartoon_intensity = parseInt(cartoonSlider.value);
+    });
+
+    // Cartoonize button
+    cartoonizeBtn.addEventListener('click', async () => {
+        if (!currentFilename) {
+            showError('Please upload an image first.');
+            return;
+        }
+
+        // Show loading
+        loadingOverlay.classList.add('active');
+        cartoonizeBtn.disabled = true;
+
+        try {
+            const response = await fetch('/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    filename: currentFilename,
+                    filter_type: selectedFilter,
+                    ...processingParams
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Show result
+                const originalImage = document.getElementById('originalImage');
+                const cartoonizedImage = document.getElementById('cartoonizedImage');
+                
+                originalImage.src = `/static/uploads/${currentFilename}`;
+                cartoonizedImage.src = data.output_url;
+
+                resultSection.classList.add('active');
+                downloadSection.classList.add('active');
+                
+                // Update download button
+                downloadBtn.href = data.output_url;
+                downloadBtn.download = `cartoonized_${currentFilename}`;
+
+                // Scroll to result
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showError(data.error || 'Processing failed. Please try again.');
+            }
+        } catch (error) {
+            showError('Processing failed. Please try again.');
+            console.error('Processing error:', error);
+        } finally {
+            loadingOverlay.classList.remove('active');
+            cartoonizeBtn.disabled = false;
+        }
+    });
+
+    // New image button
+    newImageBtn.addEventListener('click', () => {
+        // Reset state
+        currentFile = null;
+        currentFilename = '';
+        
+        // Hide result and download
+        resultSection.classList.remove('active');
+        downloadSection.classList.remove('active');
+        
+        // Reset file input
+        fileInput.value = '';
+        
+        // Scroll to upload
+        uploadSection.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Error handling
+    function showError(message) {
+        errorText.textContent = message;
+        errorMessage.classList.add('active');
+    }
+
+    function hideError() {
+        errorMessage.classList.remove('active');
+    }
+</script>
+{% endblock %}

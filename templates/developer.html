@@ -1,0 +1,581 @@
+{% extends "base.html" %}
+
+{% block title %}Developer - Cartoonizer Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Developer Page - Clean Professional Design */
+    .developer-page {
+        padding-top: 100px;
+        padding-bottom: 30px;
+        min-height: 100vh;
+        background: #1a1a2e;
+    }
+
+    /* Light mode */
+    [data-theme="light"] .developer-page {
+        background: #ffffff;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .page-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 3rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 15px;
+    }
+
+    [data-theme="light"] .page-title {
+        color: #1F2937;
+    }
+
+    .page-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.7);
+        max-width: 600px;
+        margin: 0 auto;
+        font-weight: 400;
+    }
+
+    [data-theme="light"] .page-subtitle {
+        color: #6B7280;
+    }
+
+    /* Developer Cards */
+    .developers-section {
+        margin-bottom: 80px;
+    }
+
+    .section-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ffffff;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    [data-theme="light"] .section-title {
+        color: #1F2937;
+    }
+
+    .developer-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 40px 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    [data-theme="light"] .developer-card {
+        background: #f9fafb;
+        border-color: #e5e7eb;
+    }
+
+    .developer-card:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Animated Role Background Icon */
+    .role-bg-icon {
+        position: absolute;
+        font-size: 12rem;
+        opacity: 0.08;
+        right: -20px;
+        bottom: -30px;
+        pointer-events: none;
+        animation: floatRole 6s ease-in-out infinite;
+    }
+
+    @keyframes floatRole {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-15px) rotate(5deg); }
+    }
+
+    /* Different animations for each role */
+    .card-fullstack .role-bg-icon {
+        animation: floatRole 5s ease-in-out infinite;
+        color: #667eea;
+    }
+
+    .card-designer .role-bg-icon {
+        animation: floatRole 6s ease-in-out infinite 0.5s;
+        color: #f5576c;
+    }
+
+    .card-backend .role-bg-icon {
+        animation: floatRole 4.5s ease-in-out infinite 1s;
+        color: #4facfe;
+    }
+
+    .card-tester .role-bg-icon {
+        animation: floatRole 5.5s ease-in-out infinite 1.5s;
+        color: #38f9d7;
+    }
+
+    /* Tiny Floating Particles Animation */
+    .particles {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        opacity: 0.6;
+    }
+
+    .particle-1 {
+        top: 10%;
+        left: 15%;
+        background: #667eea;
+        animation: particleFloat1 3s ease-in-out infinite;
+    }
+
+    .particle-2 {
+        top: 20%;
+        right: 20%;
+        width: 6px;
+        height: 6px;
+        background: #a855f7;
+        animation: particleFloat2 4s ease-in-out infinite 0.5s;
+    }
+
+    .particle-3 {
+        bottom: 30%;
+        left: 10%;
+        width: 5px;
+        height: 5px;
+        background: #f5576c;
+        animation: particleFloat3 3.5s ease-in-out infinite 1s;
+    }
+
+    .particle-4 {
+        bottom: 15%;
+        right: 15%;
+        width: 7px;
+        height: 7px;
+        background: #4facfe;
+        animation: particleFloat4 4.5s ease-in-out infinite 1.5s;
+    }
+
+    .particle-5 {
+        top: 40%;
+        left: 5%;
+        width: 4px;
+        height: 4px;
+        background: #38f9d7;
+        animation: particleFloat5 3s ease-in-out infinite 2s;
+    }
+
+    .particle-6 {
+        top: 60%;
+        right: 8%;
+        width: 6px;
+        height: 6px;
+        background: #667eea;
+        animation: particleFloat6 4s ease-in-out infinite 0.3s;
+    }
+
+    @keyframes particleFloat1 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+        50% { transform: translate(15px, -20px) scale(1.2); opacity: 0.3; }
+    }
+
+    @keyframes particleFloat2 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+        50% { transform: translate(-10px, -15px) scale(0.8); opacity: 0.2; }
+    }
+
+    @keyframes particleFloat3 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+        50% { transform: translate(20px, -10px) scale(1.1); opacity: 0.3; }
+    }
+
+    @keyframes particleFloat4 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+        50% { transform: translate(-15px, 15px) scale(0.9); opacity: 0.2; }
+    }
+
+    @keyframes particleFloat5 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+        50% { transform: translate(10px, 20px) scale(1.3); opacity: 0.3; }
+    }
+
+    @keyframes particleFloat6 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+        50% { transform: translate(-8px, -12px) scale(0.7); opacity: 0.1; }
+    }
+
+    /* Different particle colors for different roles */
+    .card-fullstack .particle { background: #667eea; }
+    .card-designer .particle { background: #f5576c; }
+    .card-backend .particle { background: #4facfe; }
+    .card-tester .particle { background: #38f9d7; }
+
+    /* Team Leader Special Card */
+    .developer-card.team-leader {
+        border: 2px solid #FFD700;
+        position: relative;
+    }
+
+    .team-leader-badge {
+        position: absolute;
+        top: 15px;
+        right: -5px;
+        background: #FFD700;
+        color: #1a1a2e;
+        padding: 6px 14px;
+        border-radius: 4px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        z-index: 1;
+    }
+
+    [data-theme="light"] .team-leader-badge {
+        color: #1F2937;
+    }
+
+    .profile-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        overflow: hidden;
+        background: #667eea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+    }
+
+    .developer-name {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 5px;
+    }
+
+    [data-theme="light"] .developer-name {
+        color: #1F2937;
+    }
+
+    .developer-id {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.85rem;
+        color: #667eea;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .developer-role {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #a855f7;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .skill-badges {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .skill-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        background: rgba(102, 126, 234, 0.15);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        border-radius: 20px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #667eea;
+    }
+
+    /* Tech Stack - Reduced padding for seamless footer */
+    .tech-section {
+        margin-bottom: 30px;
+    }
+
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 20px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .tech-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    [data-theme="light"] .tech-item {
+        background: #f9fafb;
+        border-color: #e5e7eb;
+    }
+
+    .tech-item:hover {
+        transform: translateY(-3px);
+    }
+
+    .tech-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .tech-name {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    [data-theme="light"] .tech-name {
+        color: #374151;
+    }
+
+    /* CTA Button */
+    .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        background: #667eea;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .cta-btn:hover {
+        background: #5a67d8;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .page-title {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .page-title {
+            font-size: 1.8rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+        }
+
+        .developer-card {
+            padding: 30px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="developer-page">
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">Meet Our Development Team</h1>
+            <p class="page-subtitle">The talented team behind Cartoonizer Pro</p>
+        </div>
+
+        <!-- Developer Cards -->
+        <div class="developers-section">
+            <div class="row justify-content-center g-4">
+                <!-- Team Leader - Full Stack -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="developer-card team-leader card-fullstack">
+                        <span class="team-leader-badge">TEAM LEADER</span>
+                        <span class="role-bg-icon">💻</span>
+                        <div class="particles">
+                            <span class="particle particle-1"></span>
+                            <span class="particle particle-2"></span>
+                            <span class="particle particle-3"></span>
+                            <span class="particle particle-4"></span>
+                            <span class="particle particle-5"></span>
+                            <span class="particle particle-6"></span>
+                        </div>
+                        <div class="profile-image">👩‍💻</div>
+                        <h3 class="developer-name">CH. MADHURI</h3>
+                        <p class="developer-id">(Y22CY3210)</p>
+                        <p class="developer-role">
+                            <i class="bi bi-laptop"></i>
+                            Full Stack Developer
+                        </p>
+                        <div class="skill-badges">
+                            <span class="skill-badge">Python</span>
+                            <span class="skill-badge">Flask</span>
+                            <span class="skill-badge">OpenCV</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UI/UX Designer -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="developer-card card-designer">
+                        <span class="role-bg-icon">🎨</span>
+                        <div class="particles">
+                            <span class="particle particle-1"></span>
+                            <span class="particle particle-2"></span>
+                            <span class="particle particle-3"></span>
+                            <span class="particle particle-4"></span>
+                            <span class="particle particle-5"></span>
+                            <span class="particle particle-6"></span>
+                        </div>
+                        <div class="profile-image">👨‍🎨</div>
+                        <h3 class="developer-name">P. ARUN KUMAR</h3>
+                        <p class="developer-id">(Y22CY3242)</p>
+                        <p class="developer-role">
+                            <i class="bi bi-palette"></i>
+                            UI/UX Designer
+                        </p>
+                        <div class="skill-badges">
+                            <span class="skill-badge">HTML/CSS</span>
+                            <span class="skill-badge">Bootstrap</span>
+                            <span class="skill-badge">JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend Engineer -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="developer-card card-backend">
+                        <span class="role-bg-icon">🗄️</span>
+                        <div class="particles">
+                            <span class="particle particle-1"></span>
+                            <span class="particle particle-2"></span>
+                            <span class="particle particle-3"></span>
+                            <span class="particle particle-4"></span>
+                            <span class="particle particle-5"></span>
+                            <span class="particle particle-6"></span>
+                        </div>
+                        <div class="profile-image">🛡️</div>
+                        <h3 class="developer-name">B. NAGA VEERA</h3>
+                        <p class="developer-id">(Y22CY3206)</p>
+                        <p class="developer-role">
+                            <i class="bi bi-database"></i>
+                            Backend Engineer
+                        </p>
+                        <div class="skill-badges">
+                            <span class="skill-badge">Python</span>
+                            <span class="skill-badge">NumPy</span>
+                            <span class="skill-badge">Image Processing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tester -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="developer-card card-tester">
+                        <span class="role-bg-icon">🔍</span>
+                        <div class="particles">
+                            <span class="particle particle-1"></span>
+                            <span class="particle particle-2"></span>
+                            <span class="particle particle-3"></span>
+                            <span class="particle particle-4"></span>
+                            <span class="particle particle-5"></span>
+                            <span class="particle particle-6"></span>
+                        </div>
+                        <div class="profile-image">🐛</div>
+                        <h3 class="developer-name">K. SIDHU</h3>
+                        <p class="developer-id">(Y22CY3226)</p>
+                        <p class="developer-role">
+                            <i class="bi bi-check-circle"></i>
+                            Tester
+                        </p>
+                        <div class="skill-badges">
+                            <span class="skill-badge">Testing</span>
+                            <span class="skill-badge">QA</span>
+                            <span class="skill-badge">Bug Fixing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="tech-section">
+            <h2 class="section-title">Technologies Used</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-icon">🐍</div>
+                    <div class="tech-name">Python</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🌶️</div>
+                    <div class="tech-name">Flask</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">📷</div>
+                    <div class="tech-name">OpenCV</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🔢</div>
+                    <div class="tech-name">NumPy</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🎨</div>
+                    <div class="tech-name">Bootstrap</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">📜</div>
+                    <div class="tech-name">JavaScript</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🎭</div>
+                    <div class="tech-name">Cartoonizer</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">☁️</div>
+                    <div class="tech-name">Cloud</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center">
+            <a href="{{ url_for('cartoonize_page') }}" class="cta-btn">
+                Try Cartoonizer Pro <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
