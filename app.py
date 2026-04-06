@@ -15,7 +15,6 @@ from config import (
     FILTER_TYPES
 )
 from processing.cartoon import process_image
-from processing.filters import get_filter_preview
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -168,18 +167,6 @@ def download_image(filename):
     except Exception as e:
         logger.error(f"Download error: {str(e)}")
         return jsonify({'success': False, 'error': f'Download failed: {str(e)}'}), 500
-
-
-@app.route('/filter-preview', methods=['GET'])
-def filter_preview():
-    """Get preview of different filter types"""
-    try:
-        filter_type = request.args.get('type', 'classic')
-        preview_data = get_filter_preview(filter_type)
-        return jsonify(preview_data)
-    except Exception as e:
-        logger.error(f"Preview error: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 if __name__ == '__main__':

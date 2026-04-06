@@ -875,7 +875,9 @@
                 const originalImage = document.getElementById('originalImage');
                 const cartoonizedImage = document.getElementById('cartoonizedImage');
                 
+                // Use static file URL for original image
                 originalImage.src = `/static/uploads/${currentFilename}`;
+                // Use static file URL for cartoonized image
                 cartoonizedImage.src = data.output_url;
 
                 resultSection.classList.add('active');

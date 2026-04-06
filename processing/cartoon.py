@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import uuid
 import os
+import io
 from pathlib import Path
 
 
@@ -225,6 +226,61 @@ def process_image(input_path, output_dir, filter_type='classic',
         
     except Exception as e:
         print(f"Error processing image: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return None
+
+
+def process_image_in_memory(image_bytes, ext, filter_type='classic', 
+                            blur_intensity=5, edge_strength=100, cartoon_intensity=8):
+    """
+    Process image from memory (bytes) and return processed image as bytes
+    This function is designed for serverless environments with read-only filesystems
+    
+    Args:
+        image_bytes: Raw image bytes
+        ext: File extension (jpg, png, etc.)
+        filter_type: Type of cartoon filter
+        blur_intensity: Bilateral filter blur amount
+        edge_strength: Edge detection threshold
+        cartoon_intensity: Color quantization level
+    
+    Returns:
+        Processed image bytes if successful, None otherwise
+    """
+    try:
+        # Decode image from bytes
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        if image is None:
+            print("Error: Could not decode image from bytes")
+            return None
+        
+        # Process based on filter type
+        if filter_type == 'classic':
+            result = process_classic_cartoon(image, blur_intensity, edge_strength, cartoon_intensity)
+        elif filter_type == 'pencil':
+            result = process_pencil_sketch(image, blur_intensity, edge_strength, cartoon_intensity)
+        elif filter_type == 'comic':
+            result = process_comic_style(image, blur_intensity, edge_strength, cartoon_intensity)
+        elif filter_type == 'high_contrast':
+            result = process_high_contrast(image, blur_intensity, edge_strength, cartoon_intensity)
+        elif filter_type == 'pastel':
+            result = process_pastel(image, blur_intensity, edge_strength, cartoon_intensity)
+        else:
+            result = process_classic_cartoon(image, blur_intensity, edge_strength, cartoon_intensity)
+        
+        # Encode result to bytes
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 95]
+        _, buffer = cv2.imencode(f'.{ext}', result, encode_param)
+        result_bytes = buffer.tobytes()
+        
+        print(f"Image processed successfully in memory")
+        return result_bytes
+        
+    except Exception as e:
+        print(f"Error processing image in memory: {str(e)}")
         import traceback
         traceback.print_exc()
         return None
