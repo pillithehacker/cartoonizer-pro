@@ -6,7 +6,7 @@ A premium AI-powered web application for converting images to cartoon style
 import os
 import uuid
 import logging
-from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 from config import (
     UPLOAD_FOLDER, OUTPUT_FOLDER, ALLOWED_EXTENSIONS, 
@@ -65,6 +65,18 @@ def developer_page():
     return render_template('developer.html')
 
 
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded images from the uploads directory"""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+@app.route('/outputs/<filename>')
+def output_file(filename):
+    """Serve processed images from the outputs directory"""
+    return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
+
+
 @app.route('/upload', methods=['POST'])
 def upload_image():
     """Handle image upload and return preview"""
@@ -93,10 +105,11 @@ def upload_image():
         with Image.open(filepath) as img:
             width, height = img.size
         
+        # Return URL that will be served by uploaded_file route
         return jsonify({
             'success': True,
             'filename': filename,
-            'preview_url': f"/static/uploads/{filename}",
+            'preview_url': f"/uploads/{filename}",
             'width': width,
             'height': height
         })
@@ -142,9 +155,11 @@ def process_image_route():
         if not output_filename:
             return jsonify({'success': False, 'error': 'Processing failed'}), 500
         
+        # Return URLs for both original and cartoonized images
         return jsonify({
             'success': True,
-            'output_url': f"/static/outputs/{output_filename}",
+            'original_image': f"/uploads/{filename}",
+            'cartoon_image': f"/outputs/{output_filename}",
             'output_filename': output_filename
         })
         

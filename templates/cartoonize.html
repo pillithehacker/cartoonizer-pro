@@ -135,10 +135,17 @@
         max-width: 100%;
         max-height: 500px;
         display: none;
+        object-fit: contain;
     }
 
     .preview-image.loaded {
         display: block;
+        animation: imageFadeIn 0.5s ease;
+    }
+
+    @keyframes imageFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     .preview-placeholder {
@@ -397,6 +404,9 @@
         overflow: hidden;
         background: #f7fafc;
         min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .comparison-image {
@@ -404,47 +414,14 @@
         max-width: 100%;
         max-height: 500px;
         margin: 0 auto;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.5s ease;
     }
 
-    .comparison-slider {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        background: #667eea;
-        cursor: ew-resize;
-        z-index: 10;
+    .comparison-image.loaded {
+        opacity: 1;
     }
-
-    .comparison-handle {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        box-shadow: 0 3px 15px rgba(102,126,234,0.5);
-    }
-
-    .comparison-label {
-        position: absolute;
-        top: 15px;
-        padding: 8px 16px;
-        background: rgba(0,0,0,0.6);
-        color: white;
-        border-radius: 20px;
-        font-family: 'Quicksand', sans-serif;
-        font-size: 0.9rem;
-    }
-
-    .label-before { left: 15px; }
-    .label-after { right: 15px; }
 
     /* Download Section */
     .download-section {
@@ -551,6 +528,259 @@
 
     [data-theme="dark"] .comparison-wrapper {
         background: #1a202c;
+    }
+
+    /* ===== Responsive Styles for Cartoonize Page ===== */
+    
+    /* Tablet */
+    @media (max-width: 991px) {
+        .cartoonize-page {
+            padding-top: 90px;
+            padding-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.2rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .upload-area {
+            padding: 40px 30px;
+        }
+        
+        .preview-container,
+        .comparison-container {
+            padding: 20px;
+        }
+        
+        .filter-options {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    /* Mobile */
+    @media (max-width: 768px) {
+        .cartoonize-page {
+            padding-top: 80px;
+            padding-bottom: 30px;
+        }
+        
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1rem;
+        }
+        
+        .upload-area {
+            padding: 30px 20px;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+        }
+        
+        .upload-text {
+            font-size: 1.1rem;
+        }
+        
+        .upload-hint {
+            font-size: 0.85rem;
+        }
+        
+        .preview-container,
+        .comparison-container {
+            padding: 15px;
+        }
+        
+        .preview-image-wrapper {
+            min-height: 250px;
+        }
+        
+        .preview-image {
+            max-height: 400px;
+        }
+        
+        .comparison-wrapper {
+            min-height: 300px;
+        }
+        
+        .comparison-image {
+            max-height: 400px;
+        }
+        
+        .filter-options {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .filter-option {
+            padding: 15px 10px;
+        }
+        
+        .filter-icon {
+            font-size: 1.5rem;
+        }
+        
+        .filter-name {
+            font-size: 0.85rem;
+        }
+        
+        .slider-group {
+            margin-bottom: 20px;
+        }
+        
+        .btn-cartoonize {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+        
+        .btn-download,
+        .btn-new {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            text-align: center;
+        }
+    }
+    
+    /* Small Mobile */
+    @media (max-width: 576px) {
+        .cartoonize-page {
+            padding-top: 75px;
+            padding-bottom: 20px;
+        }
+        
+        .page-header {
+            margin-bottom: 25px;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 0.9rem;
+        }
+        
+        .upload-section,
+        .preview-section,
+        .filter-section,
+        .sliders-section,
+        .process-section {
+            margin-bottom: 25px;
+        }
+        
+        .upload-area {
+            padding: 25px 15px;
+        }
+        
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            font-size: 0.8rem;
+        }
+        
+        .section-label {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .preview-container,
+        .comparison-container {
+            padding: 12px;
+        }
+        
+        .preview-image-wrapper {
+            min-height: 200px;
+        }
+        
+        .preview-image {
+            max-height: 300px;
+        }
+        
+        .comparison-wrapper {
+            min-height: 250px;
+        }
+        
+        .comparison-image {
+            max-height: 300px;
+        }
+        
+        .filter-options {
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .filter-option {
+            padding: 12px 8px;
+        }
+        
+        .filter-icon {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        
+        .filter-name {
+            font-size: 0.8rem;
+        }
+        
+        .slider-label {
+            font-size: 0.9rem;
+        }
+        
+        .slider-value {
+            font-size: 0.9rem;
+            padding: 3px 10px;
+        }
+        
+        .btn-cartoonize {
+            padding: 14px 30px;
+            font-size: 1rem;
+        }
+        
+        .btn-download,
+        .btn-new {
+            padding: 12px 20px;
+            font-size: 1rem;
+        }
+        
+        .btn-new {
+            margin-left: 0;
+        }
+        
+        .loading-content {
+            padding: 0 20px;
+        }
+        
+        .paint-splash::before {
+            font-size: 4rem;
+        }
+        
+        .loading-text {
+            font-size: 1.2rem;
+        }
+        
+        .loading-subtext {
+            font-size: 0.95rem;
+        }
     }
 </style>
 {% endblock %}
@@ -664,8 +894,6 @@
                 <div class="comparison-wrapper" id="comparisonWrapper">
                     <img id="originalImage" class="comparison-image" alt="Original">
                     <img id="cartoonizedImage" class="comparison-image" alt="Cartoonized">
-                    <span class="comparison-label label-before">Original</span>
-                    <span class="comparison-label label-after">Cartoonized</span>
                 </div>
             </div>
         </div>
@@ -699,6 +927,8 @@
     // State management
     let currentFile = null;
     let currentFilename = '';
+    let currentOriginalImageUrl = '';
+    let currentCartoonImageUrl = '';
     let selectedFilter = 'classic';
     let processingParams = {
         blur_intensity: 5,
@@ -798,10 +1028,18 @@
 
             if (data.success) {
                 currentFilename = data.filename;
+                currentOriginalImageUrl = data.preview_url;
                 previewImage.src = data.preview_url;
+                
                 previewImage.onload = () => {
                     previewPlaceholder.style.display = 'none';
                     previewImage.classList.add('loaded');
+                };
+
+                previewImage.onerror = () => {
+                    showError('Failed to load image preview. Please try again.');
+                    previewPlaceholder.innerHTML = '<i class="bi bi-exclamation-triangle"></i><p>Failed to load preview</p>';
+                    previewPlaceholder.style.display = 'block';
                 };
 
                 // Show filter, sliders, and process sections
@@ -814,7 +1052,7 @@
                 showError(data.error || 'Upload failed. Please try again.');
             }
         } catch (error) {
-            showError('Upload failed. Please try again.');
+            showError('Upload failed. Please check your connection and try again.');
             console.error('Upload error:', error);
         }
     }
@@ -871,33 +1109,71 @@
             const data = await response.json();
 
             if (data.success) {
-                // Show result
+                // Validate URLs exist
+                if (!data.original_image || !data.cartoon_image) {
+                    showError('Invalid response from server. Please try again.');
+                    return;
+                }
+
+                // Store URLs
+                currentOriginalImageUrl = data.original_image;
+                currentCartoonImageUrl = data.cartoon_image;
+
+                // Get image elements
                 const originalImage = document.getElementById('originalImage');
                 const cartoonizedImage = document.getElementById('cartoonizedImage');
-                
-                // Use static file URL for original image
-                originalImage.src = `/static/uploads/${currentFilename}`;
-                // Use static file URL for cartoonized image
-                cartoonizedImage.src = data.output_url;
 
-                resultSection.classList.add('active');
-                downloadSection.classList.add('active');
-                
+                // Set image sources
+                originalImage.src = data.original_image;
+                cartoonizedImage.src = data.cartoon_image;
+
+                // Handle image load events
+                let imagesLoaded = 0;
+                const totalImages = 2;
+
+                const onImageLoad = () => {
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        loadingOverlay.classList.remove('active');
+                        cartoonizeBtn.disabled = false;
+                        resultSection.classList.add('active');
+                        downloadSection.classList.add('active');
+                        
+                        // Scroll to result
+                        resultSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                };
+
+                const onImageError = (imgType) => {
+                    loadingOverlay.classList.remove('active');
+                    cartoonizeBtn.disabled = false;
+                    showError(`Failed to load ${imgType} image. Please try again.`);
+                };
+
+                originalImage.onload = onImageLoad;
+                cartoonizedImage.onload = onImageLoad;
+
+                originalImage.onerror = () => onImageError('original');
+                cartoonizedImage.onerror = () => onImageError('cartoonized');
+
+                // Add loaded class for fade-in
+                originalImage.classList.add('loaded');
+                cartoonizedImage.classList.add('loaded');
+
                 // Update download button
-                downloadBtn.href = data.output_url;
+                downloadBtn.href = data.cartoon_image;
                 downloadBtn.download = `cartoonized_${currentFilename}`;
 
-                // Scroll to result
-                resultSection.scrollIntoView({ behavior: 'smooth' });
             } else {
+                loadingOverlay.classList.remove('active');
+                cartoonizeBtn.disabled = false;
                 showError(data.error || 'Processing failed. Please try again.');
             }
         } catch (error) {
-            showError('Processing failed. Please try again.');
-            console.error('Processing error:', error);
-        } finally {
             loadingOverlay.classList.remove('active');
             cartoonizeBtn.disabled = false;
+            showError('Processing failed. Please check your connection and try again.');
+            console.error('Processing error:', error);
         }
     });
 
@@ -906,6 +1182,16 @@
         // Reset state
         currentFile = null;
         currentFilename = '';
+        currentOriginalImageUrl = '';
+        currentCartoonImageUrl = '';
+        
+        // Reset images
+        const originalImage = document.getElementById('originalImage');
+        const cartoonizedImage = document.getElementById('cartoonizedImage');
+        originalImage.src = '';
+        cartoonizedImage.src = '';
+        originalImage.classList.remove('loaded');
+        cartoonizedImage.classList.remove('loaded');
         
         // Hide result and download
         resultSection.classList.remove('active');

@@ -10,9 +10,10 @@ DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 HOST = os.environ.get('HOST', '0.0.0.0')
 PORT = int(os.environ.get('PORT', 5000))
 
-# Upload Configuration - Use /tmp for Vercel compatibility
-UPLOAD_FOLDER = Path('/tmp' if os.environ.get('VERCEL') else BASE_DIR / 'static' / 'uploads')
-OUTPUT_FOLDER = Path('/tmp' if os.environ.get('VERCEL') else BASE_DIR / 'static' / 'outputs')
+# Upload Configuration - Use /tmp/uploads and /tmp/outputs for Vercel
+UPLOAD_FOLDER = Path('/tmp/uploads' if os.environ.get('VERCEL') else BASE_DIR / 'static' / 'uploads')
+OUTPUT_FOLDER = Path('/tmp/outputs' if os.environ.get('VERCEL') else BASE_DIR / 'static' / 'outputs')
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 
