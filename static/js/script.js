@@ -319,12 +319,61 @@
     // ===== Page Transition =====
     function initPageTransition() {
         const main = document.querySelector('main');
+        const overlay = document.getElementById('pageTransitionOverlay');
+        
         if (main) {
             // Add fade-in effect on page load
             main.style.animation = 'none';
             main.offsetHeight; // Trigger reflow
-            main.style.animation = 'fadeIn 0.4s ease';
+            main.style.animation = 'pageFadeIn 0.5s ease';
+            
+            // Hide overlay after page loads
+            if (overlay) {
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                }, 300);
+            }
         }
+        
+        // Add transition to navigation links
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
+                    e.preventDefault();
+                    
+                    // Show overlay
+                    if (overlay) {
+                        overlay.classList.add('active');
+                    }
+                    
+                    // Navigate after brief delay for smooth effect
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                }
+            });
+        });
+        
+        // Handle page show event (for back/forward navigation)
+        window.addEventListener('pageshow', (event) => {
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+        });
+    }
+    
+    // ===== Smooth Page Load =====
+    function initSmoothPageLoad() {
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.3s ease';
+        
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
     }
 
     // ===== Hover Micro-interactions =====

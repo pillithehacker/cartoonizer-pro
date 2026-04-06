@@ -71,8 +71,15 @@
         <i class="bi bi-arrow-up"></i>
     </button>
 
+    <!-- Page Transition Overlay -->
+    <div class="page-transition-overlay" id="pageTransitionOverlay">
+        <div class="transition-loader">
+            <div class="transition-spinner"></div>
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <main>
+    <main id="mainContent">
         {% block content %}{% endblock %}
     </main>
 
